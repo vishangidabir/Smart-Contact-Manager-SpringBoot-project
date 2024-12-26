@@ -1,7 +1,9 @@
 package com.example.SmartContactManageProject.Entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
 import java.util.ArrayList;
@@ -14,24 +16,34 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @NotBlank(message = "Name is required")
-    @Size(min = 2, max = 12, message = "Name should be between 2 and 12 characters")
+    @NotBlank(message = "Name should not be blank !!")
+    @Size(min = 2, max = 12, message = "Name should be between 2 and 12 characters !!")
 //    @Pattern(regexp = "^[a-zA-Z ]*$", message = "Name can only contain letters and spaces.")
     private String name;
 
+    @NotBlank(message = "Email is mandatory !!")
     @Column(unique = true)
+    @Email(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")
     private String email;
+
+    @NotBlank(message = "Password is required.")
+    @Size(min = 8, max = 32, message = "Password must be between 8 and 32 characters.")
+    @Pattern(
+            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=]).*$",
+            message = "Password must include uppercase, lowercase, a digit, and a special character."
+    )
     private String password;
     private String role;
     private boolean enabled;
     private String imageUrl;
     @Column(length = 500)
+    @Size(max = 500, message = "About section must not exceed 500 characters.")
     private String about;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Contact> contactList = new ArrayList<Contact>();
 
-    public User(){
+    public User() {
         //super();
     }
 
